@@ -41,7 +41,7 @@ function CertifySignupPage({ setUser }) {
         if (response.data.user) {
           setUser(response.data.user);
         }
-        navigate('/certify');
+        navigate('/dashboard');
       } else {
         setError('Invalid response from server');
       }

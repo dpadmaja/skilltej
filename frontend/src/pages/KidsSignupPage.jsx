@@ -46,7 +46,7 @@ function KidsSignupPage({ setUser }) {
         if (response.data.user) {
           setUser(response.data.user);
         }
-        navigate('/kids');
+        navigate('/kids-dashboard');
       }
     } catch (err) {
       const errorDetail = err.response?.data?.detail || err.message || 'Signup failed. Please try again.';

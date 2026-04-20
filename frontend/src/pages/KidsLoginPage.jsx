@@ -39,7 +39,7 @@ function KidsLoginPage({ setUser }) {
         if (response.data.user) {
           setUser(response.data.user);
         }
-        navigate('/kids');
+        navigate('/kids-dashboard');
       } else {
         setError('Invalid response from server');
       }

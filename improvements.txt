@@ -1,0 +1,15 @@
+Kids sign up, login and pro signup and login are failing. fix those problems.Also ensure to have logout inside and on clicking logout it should redirect to login page of respective product.
+
+Skilltej Pro - on login it should dashboard of all courses available and should be able to search based on filters. Against each course provide buttons to download curriculum and Notes in presentation, Interview Prep, Practice.
+
+On kids login , on top there are 4 buttons Dashboard, Learning path, Life skills, Resources.
+1. It should display personalized learning path based on grade for Mathematics, Science & English. There should be subscribe button and on clicking it should lead to subscription details and payment page. on payment, it should lead to 
+2. It should display Life skills of all life skills in home page and against each there should be user guide about that. there should be provision to subscribe. On clicking subscribe it should lead to payments page of subscription for 1 year. There should be 2 tabs, available and subscribed. In available page, it should list courses and in subscribed only subscribed courses.
+3. Dashboard should display progress of learning path & life skills.
+   It should display improvement areas of learning path & life skills.
+4. Resources should display flash cards, mind maps for selected grade on life skills and subject skills.
+
+   
+    
+
+

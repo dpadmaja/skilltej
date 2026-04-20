@@ -52,7 +52,7 @@ function ProSignupPage({ setUser }) {
         if (response.data.user) {
           setUser(response.data.user);
         }
-        navigate('/pro');
+        navigate('/pro-dashboard');
       }
     } catch (err) {
       const errorDetail = err.response?.data?.detail || err.message || 'Signup failed. Please try again.';

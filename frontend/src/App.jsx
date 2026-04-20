@@ -16,6 +16,8 @@ import ProSignupPage from './pages/ProSignupPage';
 import CertifyLoginPage from './pages/CertifyLoginPage';
 import CertifySignupPage from './pages/CertifySignupPage';
 import DashboardPage from './pages/DashboardPage';
+import KidsDashboardPage from './pages/KidsDashboardPage';
+import ProDashboardPage from './pages/ProDashboardPage';
 import CertificationDetailsPage from './pages/CertificationDetailsPage';
 import PaymentPage from './pages/PaymentPage';
 import ExamPage from './pages/ExamPage';
@@ -33,6 +35,20 @@ import { authService, adminService } from './services/api';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentProduct, setCurrentProduct] = useState('certify');
+
+  // Detect product from current URL path
+  const detectProduct = () => {
+    const path = window.location.pathname;
+    if (path.includes('/kids')) return 'kids';
+    if (path.includes('/pro')) return 'pro';
+    return 'certify';
+  };
+
+  useEffect(() => {
+    // Update product when route changes
+    setCurrentProduct(detectProduct());
+  }, []);
 
   useEffect(() => {
     // Initialize app - seed database and check auth
@@ -83,7 +99,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        {user && <Navbar user={user} onLogout={handleLogout} />}
+        {user && <Navbar user={user} onLogout={handleLogout} product={currentProduct} />}
         <Routes>
           {/* Home Page - accessible to everyone */}
           <Route path="/" element={<HomePage />} />
@@ -107,7 +123,7 @@ function App() {
           
           <Route path="/skill-wallet/:walletUrl" element={<PublicSkillWalletPage />} />
 
-          {/* Protected Routes */}
+          {/* Protected Routes - Certify Dashboard */}
           <Route
             path="/dashboard"
             element={
@@ -116,6 +132,28 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Protected Routes - Kids Dashboard */}
+          <Route
+            path="/kids-dashboard"
+            element={
+              <PrivateRoute user={user}>
+                <KidsDashboardPage user={user} onLogout={handleLogout} />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Protected Routes - Pro Dashboard */}
+          <Route
+            path="/pro-dashboard"
+            element={
+              <PrivateRoute user={user}>
+                <ProDashboardPage user={user} onLogout={handleLogout} />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Protected Routes - Other */}
           <Route
             path="/certification/:certId"
             element={
