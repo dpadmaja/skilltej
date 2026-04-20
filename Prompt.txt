@@ -1,0 +1,32 @@
+Build a certification product with the following:
+
+ 1. Login page 
+ 2. Sign up page
+ 3. Logout page
+ 4. Dashboard to show up relevant certifications, Completed certifications
+ 5. Against certifications -- provide details
+ 5. For relevant click proceed button. 
+ 6. on proceed it should give payment gateway page such as razor pay. For now keep dummy or demo.
+ 6. on proceeding, it should open up certification with timer and should follow all options as next previous, summary, complete.
+ 7. click on complete , it should prompt are you good to complete and Yes/No submit button.
+ 8. On submission, it should evaluate internally and store results in the database and present on the UI interface.
+ 9. Database should store, certification details, user completed certifications.
+10. Certification should follow avoiding cheating practices. 
+11. provide pass/fail and also efficient score. provide practical ability/Debugging ability.
+12. Also provide a place holder for skill wallet to share with anybody via links through linkedin and other platforms.
+
+
+---------------------
+1. Certification details -- Name, description, duration, type
+2. Engine - For generating questions
+3. question bank - Questions
+4. Evaluation engine
+5. The questions should be of real world use cases and mix of theory,practical.
+6. Try for below certifications for now:
+     1. AI for quality engineers
+     2. Gen AI fundamentals
+     3. Agentic AI fundamentals
+     4. AI for Data analysts
+     5. AI for software developers
+----------------------------
+Stack should be backend from Postgre SQL , Python , python fast api, ui should use a flavour of .js should look decent and interactive. 
