@@ -89,7 +89,10 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
             email=user.email,
             username=user.username,
             password=user.password,
-            full_name=user.full_name
+            full_name=user.full_name,
+            grade=user.grade,
+            city=user.city,
+            role=user.role
         )
 
         if not db_user:

@@ -63,7 +63,8 @@ class AuthService:
     """Authentication service"""
 
     @staticmethod
-    def create_user(db: Session, email: str, username: str, password: str, full_name: str):
+    def create_user(db: Session, email: str, username: str, password: str, full_name: str, 
+                   grade: str = None, city: str = None, role: str = None):
         """Create new user"""
         # Check if user exists
         existing_user = db.query(User).filter(
@@ -79,7 +80,10 @@ class AuthService:
             username=username,
             hashed_password=hashed_password,
             full_name=full_name,
-            is_active=True
+            is_active=True,
+            grade=grade,
+            city=city,
+            role=role
         )
         db.add(user)
         db.commit()

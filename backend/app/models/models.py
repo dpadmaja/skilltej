@@ -17,6 +17,14 @@ class User(Base):
     hashed_password = Column(String)
     full_name = Column(String)
     is_active = Column(Boolean, default=True)
+    
+    # Product-specific fields (optional, for Kids product)
+    grade = Column(String, nullable=True)  # e.g., "Grade 5"
+    city = Column(String, nullable=True)
+    
+    # Product-specific fields (optional, for Pro product)
+    role = Column(String, nullable=True)  # e.g., "Software Developer"
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

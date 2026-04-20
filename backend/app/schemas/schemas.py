@@ -9,6 +9,10 @@ class UserCreate(BaseModel):
     username: str
     password: str
     full_name: str
+    # Optional product-specific fields
+    grade: Optional[str] = None  # For Kids product
+    city: Optional[str] = None  # For Kids product
+    role: Optional[str] = None  # For Pro product
 
 
 class UserLogin(BaseModel):
@@ -22,6 +26,9 @@ class UserResponse(BaseModel):
     username: str
     full_name: str
     is_active: bool
+    grade: Optional[str] = None
+    city: Optional[str] = None
+    role: Optional[str] = None
     created_at: datetime
 
     class Config:
