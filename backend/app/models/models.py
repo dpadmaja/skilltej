@@ -7,32 +7,227 @@ import enum
 Base = declarative_base()
 
 
+# ============================================================================
+# TABLE 1: USERS - Core authentication and user profiles across all products
+# ============================================================================
 class User(Base):
-    """User model for authentication and profile management"""
+    """
+    Central user table for multi-product platform.
+    Stores authentication and core profile info for all products (Certify, Kids, Pro).
+    """
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    
+    # Authentication fields
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+    
+    # Basic profile
     full_name = Column(String)
     is_active = Column(Boolean, default=True)
     
-    # Product-specific fields (optional, for Kids product)
-    grade = Column(String, nullable=True)  # e.g., "Grade 5"
-    city = Column(String, nullable=True)
+    # Product enrollments (tracks which products user is enrolled in)
+    enrolled_products = Column(JSON, default=list)  # e.g., ["certify", "kids", "pro"]
     
-    # Product-specific fields (optional, for Pro product)
-    role = Column(String, nullable=True)  # e.g., "Software Developer"
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships (one user can have multiple profiles in different products)
+    certify_profile = relationship("CertifyProfile", back_populates="user", uselist=False)
+    kids_profile = relationship("KidsProfile", back_populates="user", uselist=False)
+    pro_profile = relationship("ProProfile", back_populates="user", uselist=False)
+    
+    exam_attempts = relationship("ExamAttempt", back_populates="user")
+    skill_wallet = relationship("SkillWallet", back_populates="user", uselist=False)
+
+
+# ============================================================================
+# TABLE 2: PRODUCT_PROFILES - Product-specific user data and preferences
+# ============================================================================
+
+class CertifyProfile(Base):
+    """Certify product profile - Professional certifications"""
+    __tablename__ = "certify_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    
+    # Certify-specific fields
+    expertise_area = Column(String, nullable=True)  # e.g., "AI", "Cloud"
+    bio = Column(Text, nullable=True)
+    profile_photo_url = Column(String, nullable=True)
+    
+    # Achievements
+    certifications_completed = Column(Integer, default=0)
+    total_certifications_earned = Column(JSON, default=list)
+    current_streak = Column(Integer, default=0)
+    
+    # Preferences
+    notification_preferences = Column(JSON, default=dict)
+    learning_pace = Column(String, default="moderate")
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    exam_attempts = relationship("ExamAttempt", back_populates="user")
-    skill_wallet = relationship("SkillWallet", back_populates="user", uselist=False)
+    user = relationship("User", back_populates="certify_profile")
 
 
+class KidsProfile(Base):
+    """Kids product profile - K-12 learning platform"""
+    __tablename__ = "kids_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    
+    # Kids-specific fields
+    grade = Column(String)  # e.g., "Grade 5"
+    city = Column(String)
+    age = Column(Integer, nullable=True)
+    
+    # Learning progress
+    completed_learning_paths = Column(JSON, default=list)
+    active_learning_paths = Column(JSON, default=list)
+    
+    # Life Skills tracking
+    completed_life_skills = Column(JSON, default=list)
+    subscribed_life_skills = Column(JSON, default=list)
+    
+    # Subscriptions
+    active_subscriptions = Column(JSON, default=list)
+    total_study_hours = Column(Float, default=0.0)
+    current_level = Column(String, default="beginner")
+    
+    # Parental controls
+    parent_email = Column(String, nullable=True)
+    daily_limit_minutes = Column(Integer, default=120)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="kids_profile")
+
+
+class ProProfile(Base):
+    """Pro product profile - Professional AI courses and development"""
+    __tablename__ = "pro_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    
+    # Pro-specific fields
+    role = Column(String)  # e.g., "Software Developer"
+    company = Column(String, nullable=True)
+    industry = Column(String, nullable=True)
+    years_experience = Column(Integer, nullable=True)
+    
+    # Course progress
+    enrolled_courses = Column(JSON, default=list)
+    completed_courses = Column(JSON, default=list)
+    in_progress_courses = Column(JSON, default=list)
+    
+    # Professional development
+    active_subscriptions = Column(JSON, default=list)
+    career_goals = Column(Text, nullable=True)
+    skills_to_develop = Column(JSON, default=list)
+    
+    # Performance metrics
+    total_learning_hours = Column(Float, default=0.0)
+    average_course_rating = Column(Float, nullable=True)
+    certificates_earned = Column(Integer, default=0)
+    
+    # Social
+    linkedin_url = Column(String, nullable=True)
+    github_url = Column(String, nullable=True)
+    portfolio_url = Column(String, nullable=True)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="pro_profile")
+
+
+# ============================================================================
+# TABLE 3: LEARNING_CONTENT - All courses, certifications, learning paths
+# ============================================================================
+
+class ContentType(str, enum.Enum):
+    """Different types of learning content across products"""
+    CERTIFICATION = "certification"  # Certify product
+    LEARNING_PATH = "learning_path"  # Kids product
+    PROFESSIONAL_COURSE = "professional_course"  # Pro product
+
+
+class LearningContent(Base):
+    """Unified content table for all learning materials"""
+    __tablename__ = "learning_content"
+
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Content identification
+    content_type = Column(String, index=True)  # certification, learning_path, professional_course
+    product = Column(String, index=True)  # certify, kids, pro
+    
+    # Basic info
+    title = Column(String, index=True)
+    description = Column(Text)
+    short_description = Column(String, nullable=True)
+    
+    # Content metadata
+    difficulty_level = Column(String, default="Beginner")
+    duration_hours = Column(Float)
+    category = Column(String, nullable=True)
+    subcategory = Column(String, nullable=True)
+    
+    # For Certify certifications
+    passing_score = Column(Float, nullable=True, default=70.0)
+    total_questions = Column(Integer, nullable=True)
+    duration_minutes = Column(Integer, nullable=True)
+    
+    # For Kids learning paths
+    target_grade = Column(String, nullable=True)
+    learning_objectives = Column(JSON, default=list)
+    
+    # For Pro courses
+    instructor_name = Column(String, nullable=True)
+    instructor_bio = Column(Text, nullable=True)
+    students_enrolled = Column(Integer, default=0)
+    average_rating = Column(Float, nullable=True)
+    course_includes = Column(JSON, default=list)
+    
+    # Subscription & pricing
+    is_free = Column(Boolean, default=False)
+    price = Column(Float, nullable=True)
+    subscription_required = Column(Boolean, default=False)
+    
+    # Content resources
+    cover_image_url = Column(String, nullable=True)
+    content_modules = Column(JSON, default=list)
+    resources = Column(JSON, default=dict)
+    
+    # Engagement metrics
+    total_enrollments = Column(Integer, default=0)
+    completion_rate = Column(Float, nullable=True)
+    
+    # Administrative
+    is_published = Column(Boolean, default=True)
+    is_featured = Column(Boolean, default=False)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    questions = relationship("Question", back_populates="content")
+    exam_attempts = relationship("ExamAttempt", back_populates="content")
+    enrollments = relationship("ContentEnrollment", back_populates="content")
+
+
+# Keep old Certification class for backward compatibility (for now)
 class CertificationType(str, enum.Enum):
     AI_QE = "AI for quality engineers"
     GEN_AI = "Gen AI fundamentals"
@@ -42,17 +237,17 @@ class CertificationType(str, enum.Enum):
 
 
 class Certification(Base):
-    """Certification details model"""
+    """Certification details model - DEPRECATED: Use LearningContent instead"""
     __tablename__ = "certifications"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(Text)
     cert_type = Column(String, index=True)
-    duration_minutes = Column(Integer)  # Total exam duration
+    duration_minutes = Column(Integer)
     passing_score = Column(Float, default=70.0)
     total_questions = Column(Integer)
-    difficulty_level = Column(String, default="Beginner")  # Beginner, Intermediate, Expert
+    difficulty_level = Column(String, default="Beginner")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -73,20 +268,25 @@ class Question(Base):
     __tablename__ = "questions"
 
     id = Column(Integer, primary_key=True, index=True)
-    certification_id = Column(Integer, ForeignKey("certifications.id"))
+    
+    # Foreign keys - support both old and new schema
+    certification_id = Column(Integer, ForeignKey("certifications.id"), nullable=True)  # OLD: for backward compat
+    content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=True)  # NEW: unified
+    
     question_text = Column(Text)
     question_type = Column(String, default=QuestionType.MULTIPLE_CHOICE)
-    difficulty = Column(String, default="medium")  # easy, medium, hard
-    options = Column(JSON)  # For MCQ/True-False
-    correct_answer = Column(String)  # Can be index or text
+    difficulty = Column(String, default="medium")
+    options = Column(JSON)
+    correct_answer = Column(String)
     explanation = Column(Text)
     points = Column(Float, default=1.0)
     is_practical = Column(Boolean, default=False)
-    topic = Column(String)  # For categorization
+    topic = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
     certification = relationship("Certification", back_populates="questions")
+    content = relationship("LearningContent", back_populates="questions")
     answers = relationship("UserAnswer", back_populates="question")
 
 
@@ -96,7 +296,11 @@ class ExamAttempt(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    certification_id = Column(Integer, ForeignKey("certifications.id"))
+    
+    # Foreign keys - support both old and new schema
+    certification_id = Column(Integer, ForeignKey("certifications.id"), nullable=True)  # OLD: for backward compat
+    content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=True)  # NEW: unified
+    
     start_time = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime, nullable=True)
     total_duration_seconds = Column(Integer)
@@ -105,21 +309,22 @@ class ExamAttempt(Base):
     total_score = Column(Float, nullable=True)
     passing_score = Column(Float)
     is_passed = Column(Boolean, nullable=True)
-    practical_ability = Column(Float, nullable=True)  # 0-100
-    debugging_ability = Column(Float, nullable=True)  # 0-100
-    efficiency_score = Column(Float, nullable=True)  # Based on time taken
+    practical_ability = Column(Float, nullable=True)
+    debugging_ability = Column(Float, nullable=True)
+    efficiency_score = Column(Float, nullable=True)
     attempts_count = Column(Integer, default=1)
     current_question_index = Column(Integer, default=0)
-    ip_address = Column(String)  # For anti-cheating
-    device_info = Column(JSON)  # For anti-cheating
-    tab_switch_count = Column(Integer, default=0)  # Anti-cheating metric
-    copy_paste_count = Column(Integer, default=0)  # Anti-cheating metric
+    ip_address = Column(String)
+    device_info = Column(JSON)
+    tab_switch_count = Column(Integer, default=0)
+    copy_paste_count = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="exam_attempts")
     certification = relationship("Certification", back_populates="exam_attempts")
+    content = relationship("LearningContent", back_populates="exam_attempts")
     answers = relationship("UserAnswer", back_populates="exam_attempt")
 
 
@@ -147,13 +352,41 @@ class SkillWallet(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
-    wallet_url = Column(String, unique=True, index=True)  # Unique URL for sharing
+    wallet_url = Column(String, unique=True, index=True)
     is_public = Column(Boolean, default=False)
+    featured_certifications = Column(JSON, default=list)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="skill_wallet")
+
+
+class ContentEnrollment(Base):
+    """Track user enrollments in courses/learning paths/certifications"""
+    __tablename__ = "content_enrollments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    content_id = Column(Integer, ForeignKey("learning_content.id"))
+    
+    enrollment_date = Column(DateTime, default=datetime.utcnow)
+    completion_date = Column(DateTime, nullable=True)
+    
+    # Progress tracking
+    is_completed = Column(Boolean, default=False)
+    progress_percentage = Column(Float, default=0.0)
+    last_accessed = Column(DateTime, nullable=True)
+    
+    # For subscriptions
+    subscription_type = Column(String, nullable=True)  # basic, premium, lifetime
+    subscription_expiry = Column(DateTime, nullable=True)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    content = relationship("LearningContent", back_populates="enrollments")
 
 
 class PaymentTransaction(Base):
