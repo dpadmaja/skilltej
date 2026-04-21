@@ -29,7 +29,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     
     # Product enrollments (tracks which products user is enrolled in)
-    enrolled_products = Column(JSON, default=list)  # e.g., ["certify", "kids", "pro"]
+    enrolled_products = Column(JSON, default=lambda: [])  # e.g., ["certify", "kids", "pro"]
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -62,11 +62,11 @@ class CertifyProfile(Base):
     
     # Achievements
     certifications_completed = Column(Integer, default=0)
-    total_certifications_earned = Column(JSON, default=list)
+    total_certifications_earned = Column(JSON, default=lambda: [])
     current_streak = Column(Integer, default=0)
     
     # Preferences
-    notification_preferences = Column(JSON, default=dict)
+    notification_preferences = Column(JSON, default=lambda: {})
     learning_pace = Column(String, default="moderate")
     
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -89,15 +89,15 @@ class KidsProfile(Base):
     age = Column(Integer, nullable=True)
     
     # Learning progress
-    completed_learning_paths = Column(JSON, default=list)
-    active_learning_paths = Column(JSON, default=list)
+    completed_learning_paths = Column(JSON, default=lambda: [])
+    active_learning_paths = Column(JSON, default=lambda: [])
     
     # Life Skills tracking
-    completed_life_skills = Column(JSON, default=list)
-    subscribed_life_skills = Column(JSON, default=list)
+    completed_life_skills = Column(JSON, default=lambda: [])
+    subscribed_life_skills = Column(JSON, default=lambda: [])
     
     # Subscriptions
-    active_subscriptions = Column(JSON, default=list)
+    active_subscriptions = Column(JSON, default=lambda: [])
     total_study_hours = Column(Float, default=0.0)
     current_level = Column(String, default="beginner")
     
@@ -126,14 +126,14 @@ class ProProfile(Base):
     years_experience = Column(Integer, nullable=True)
     
     # Course progress
-    enrolled_courses = Column(JSON, default=list)
-    completed_courses = Column(JSON, default=list)
-    in_progress_courses = Column(JSON, default=list)
+    enrolled_courses = Column(JSON, default=lambda: [])
+    completed_courses = Column(JSON, default=lambda: [])
+    in_progress_courses = Column(JSON, default=lambda: [])
     
     # Professional development
-    active_subscriptions = Column(JSON, default=list)
+    active_subscriptions = Column(JSON, default=lambda: [])
     career_goals = Column(Text, nullable=True)
-    skills_to_develop = Column(JSON, default=list)
+    skills_to_develop = Column(JSON, default=lambda: [])
     
     # Performance metrics
     total_learning_hours = Column(Float, default=0.0)
@@ -191,14 +191,14 @@ class LearningContent(Base):
     
     # For Kids learning paths
     target_grade = Column(String, nullable=True)
-    learning_objectives = Column(JSON, default=list)
+    learning_objectives = Column(JSON, default=lambda: [])
     
     # For Pro courses
     instructor_name = Column(String, nullable=True)
     instructor_bio = Column(Text, nullable=True)
     students_enrolled = Column(Integer, default=0)
     average_rating = Column(Float, nullable=True)
-    course_includes = Column(JSON, default=list)
+    course_includes = Column(JSON, default=lambda: [])
     
     # Subscription & pricing
     is_free = Column(Boolean, default=False)
@@ -207,8 +207,8 @@ class LearningContent(Base):
     
     # Content resources
     cover_image_url = Column(String, nullable=True)
-    content_modules = Column(JSON, default=list)
-    resources = Column(JSON, default=dict)
+    content_modules = Column(JSON, default=lambda: [])
+    resources = Column(JSON, default=lambda: {})
     
     # Engagement metrics
     total_enrollments = Column(Integer, default=0)
@@ -354,7 +354,7 @@ class SkillWallet(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     wallet_url = Column(String, unique=True, index=True)
     is_public = Column(Boolean, default=False)
-    featured_certifications = Column(JSON, default=list)
+    featured_certifications = Column(JSON, default=lambda: [])
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
