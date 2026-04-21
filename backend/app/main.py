@@ -8,7 +8,9 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from database.database import get_db, engine
-from app.models.models import Base, User, Certification, ExamAttempt, Question, UserAnswer, SkillWallet, PaymentTransaction
+from app.models.models import (Base, User, Certification, ExamAttempt, Question, UserAnswer, 
+                               SkillWallet, PaymentTransaction, CertifyProfile, KidsProfile, 
+                               ProProfile, LearningContent, ContentEnrollment)
 from app.schemas.schemas import *
 from app.services.auth_service import (
     AuthService, ExamService, AntiCheatService,
