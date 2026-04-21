@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from app.models.models import User, ExamAttempt, UserAnswer, Question, Certification
+from app.models.models import (User, ExamAttempt, UserAnswer, Question, Certification,
+                               KidsProfile, ProProfile, CertifyProfile, SkillWallet)
 import os
 from dotenv import load_dotenv
+import uuid
 
 load_dotenv()
 
@@ -64,8 +66,8 @@ class AuthService:
 
     @staticmethod
     def create_user(db: Session, email: str, username: str, password: str, full_name: str, 
-                   grade: str = None, city: str = None, role: str = None):
-        """Create new user"""
+                   product: str = "certify", grade: str = None, city: str = None, role: str = None):
+        """Create new user with product-specific profile"""
         # Check if user exists
         existing_user = db.query(User).filter(
             (User.email == email) | (User.username == username)
@@ -81,14 +83,41 @@ class AuthService:
             hashed_password=hashed_password,
             full_name=full_name,
             is_active=True,
-            grade=grade,
-            city=city,
-            role=role
+            enrolled_products=[product]
         )
         db.add(user)
-        db.commit()
-        db.refresh(user)
-        return user
+        db.flush()  # Get user ID without committing
+        
+        # Create product-specific profile
+        try:
+            if product == "kids":
+                profile = KidsProfile(
+                    user_id=user.id,
+                    grade=grade or "Grade 5",
+                    city=city or "Not specified"
+                )
+                db.add(profile)
+            elif product == "pro":
+                profile = ProProfile(
+                    user_id=user.id,
+                    role=role or "Not specified"
+                )
+                db.add(profile)
+            else:  # certify
+                profile = CertifyProfile(user_id=user.id)
+                db.add(profile)
+            
+            # Create skill wallet
+            wallet_url = f"wallet_{user.id}_{uuid.uuid4().hex[:8]}"
+            skill_wallet = SkillWallet(user_id=user.id, wallet_url=wallet_url)
+            db.add(skill_wallet)
+            
+            db.commit()
+            db.refresh(user)
+            return user
+        except Exception as e:
+            db.rollback()
+            raise e
 
     @staticmethod
     def authenticate_user(db: Session, email: str, password: str):

@@ -35,7 +35,11 @@ function CertifySignupPage({ setUser }) {
     }
 
     try {
-      const response = await authService.signup(formData);
+      const signupData = {
+        ...formData,
+        product: 'certify'  // Set product to certify
+      };
+      const response = await authService.signup(signupData);
       if (response.data && response.data.access_token) {
         localStorage.setItem('access_token', response.data.access_token);
         if (response.data.user) {

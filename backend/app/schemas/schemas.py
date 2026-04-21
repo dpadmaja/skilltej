@@ -9,6 +9,7 @@ class UserCreate(BaseModel):
     username: str
     password: str
     full_name: str
+    product: str = "certify"  # certify, kids, or pro
     # Optional product-specific fields
     grade: Optional[str] = None  # For Kids product
     city: Optional[str] = None  # For Kids product

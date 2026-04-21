@@ -90,6 +90,7 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
             username=user.username,
             password=user.password,
             full_name=user.full_name,
+            product=user.product,
             grade=user.grade,
             city=user.city,
             role=user.role
@@ -100,12 +101,6 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email or username already registered"
             )
-
-        # Create skill wallet for user
-        wallet_url = f"wallet_{db_user.id}_{uuid.uuid4().hex[:8]}"
-        skill_wallet = SkillWallet(user_id=db_user.id, wallet_url=wallet_url)
-        db.add(skill_wallet)
-        db.commit()
 
         access_token = create_access_token(data={"sub": db_user.id})
         user_response = UserResponse.model_validate(db_user)
