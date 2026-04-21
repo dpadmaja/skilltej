@@ -20,10 +20,10 @@ if __name__ == "__main__":
     # Check if running on Windows
     if sys.platform == "win32":
         # Windows command
-        cmd = [sys.executable, "-m", "uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+        cmd = [sys.executable, "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     else:
         # Unix/Mac command
-        cmd = ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+        cmd = ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
     print("Starting server...")
     print("API will be available at: http://localhost:8000")
