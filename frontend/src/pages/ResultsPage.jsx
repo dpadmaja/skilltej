@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Trophy, TrendingUp, CheckCircle, XCircle, Download } from 'lucide-react';
 import { examService } from '../services/api';
 
 function ResultsPage() {
@@ -9,6 +9,8 @@ function ResultsPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [downloadingCert, setDownloadingCert] = useState(false);
+  const [certError, setCertError] = useState(null);
 
   useEffect(() => {
     loadResults();
@@ -23,6 +25,41 @@ function ResultsPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadCertificate = async () => {
+    setDownloadingCert(true);
+    setCertError(null);
+    try {
+      const response = await fetch(`/api/certificates/${examId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download certificate');
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob();
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Certificate_${examId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (err) {
+      setCertError('Failed to download certificate: ' + err.message);
+      console.error(err);
+    } finally {
+      setDownloadingCert(false);
     }
   };
 
@@ -176,19 +213,36 @@ function ResultsPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-4">
-            <Link
-              to="/skill-wallet"
-              className="btn-success flex-1 text-center"
-            >
-              View Skill Wallet
-            </Link>
-            <Link
-              to="/dashboard"
-              className="btn-primary flex-1 text-center"
-            >
-              Back to Dashboard
-            </Link>
+          <div className="space-y-4">
+            {certError && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 text-sm">{certError}</p>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {result.is_passed && (
+                <button
+                  onClick={downloadCertificate}
+                  disabled={downloadingCert}
+                  className="btn-success flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Download size={20} />
+                  <span>{downloadingCert ? 'Downloading...' : 'Download Certificate'}</span>
+                </button>
+              )}
+              <Link
+                to="/skill-wallet"
+                className="btn-success flex items-center justify-center"
+              >
+                View Skill Wallet
+              </Link>
+              <Link
+                to="/dashboard"
+                className="btn-primary flex items-center justify-center"
+              >
+                Back to Dashboard
+              </Link>
+            </div>
           </div>
         </div>
       )}

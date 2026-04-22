@@ -37,27 +37,9 @@ function Navbar({ user, onLogout, product = 'certify' }) {
         <div className="flex justify-between items-center h-16">
           <Link to={getDashboardLink()} className="flex items-center space-x-2">
             <Logo />
-            <div className="text-white font-bold text-lg hidden sm:block">
-              {getProductName()}
-            </div>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            {product !== 'kids' && (
-              <>
-                <Link to={getDashboardLink()} className="text-white hover:text-yellow-300 flex items-center space-x-1">
-                  <Home size={20} />
-                  <span>Dashboard</span>
-                </Link>
-                {product === 'certify' && (
-                  <Link to="/skill-wallet" className="text-white hover:text-yellow-300 flex items-center space-x-1">
-                    <Wallet size={20} />
-                    <span>Skill Wallet</span>
-                  </Link>
-                )}
-              </>
-            )}
-          </div>
+          
 
           <div className="flex items-center space-x-4">
             <span className="text-white text-sm hidden sm:inline">{user?.full_name}</span>

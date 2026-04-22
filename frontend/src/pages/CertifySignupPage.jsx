@@ -96,18 +96,6 @@ function CertifySignupPage({ setUser }) {
           <p className="text-xl text-sky-700 mb-8">Join thousands of professionals earning recognized certifications</p>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-center space-x-3 text-sky-900">
-              <div className="w-10 h-10 bg-sky-200 rounded-full flex items-center justify-center">✓</div>
-              <span>Flexible learning schedule</span>
-            </div>
-            <div className="flex items-center justify-center space-x-3 text-sky-900">
-              <div className="w-10 h-10 bg-sky-200 rounded-full flex items-center justify-center">✓</div>
-              <span>Career advancement opportunities</span>
-            </div>
-            <div className="flex items-center justify-center space-x-3 text-sky-900">
-              <div className="w-10 h-10 bg-sky-200 rounded-full flex items-center justify-center">✓</div>
-              <span>Lifetime access to materials</span>
-            </div>
           </div>
         </div>
       </div>

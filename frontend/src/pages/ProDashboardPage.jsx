@@ -5,6 +5,16 @@ import Navbar from '../components/Navbar';
 
 function ProDashboardPage({ user, onLogout }) {
   const navigate = useNavigate();
+  const storedUser = JSON.parse((typeof window !== 'undefined') ? localStorage.getItem('user') || 'null' : 'null');
+  const _user = storedUser || user;
+  const [localUser, setLocalUser] = useState(_user);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    setLocalUser(null);
+    navigate('/pro-login');
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
@@ -174,7 +184,7 @@ function ProDashboardPage({ user, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar user={user} onLogout={onLogout} product="pro" />
+      <Navbar user={localUser} onLogout={handleLogout} product="pro" />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">

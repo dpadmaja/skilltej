@@ -26,7 +26,6 @@ import SkillWalletPage from './pages/SkillWalletPage';
 import PublicSkillWalletPage from './pages/PublicSkillWalletPage';
 
 // Components
-import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 
 // Services
@@ -99,7 +98,6 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        {user && <Navbar user={user} onLogout={handleLogout} product={currentProduct} />}
         <Routes>
           {/* Home Page - accessible to everyone */}
           <Route path="/" element={<HomePage />} />

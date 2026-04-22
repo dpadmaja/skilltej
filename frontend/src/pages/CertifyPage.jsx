@@ -54,7 +54,7 @@ function CertifyPage() {
         </div>
         <div className="max-w-7xl mx-auto text-center flex-1">
           <h1 className="text-3xl font-bold text-white">Certify</h1>
-          <p className="text-gray-300">Professional AI Certifications</p>
+          <p className="text-gray-300">Professional Certifications</p>
         </div>
         {!isLoggedIn && (
           <div className="absolute right-4 top-4 flex gap-3">

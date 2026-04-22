@@ -114,7 +114,7 @@ function ProSignupPage({ setUser }) {
           <div className="w-full max-w-md">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-1">Join Skilltej Pro!</h1>
-              <p className="text-gray-600">Level up your AI skills professionally</p>
+              <p className="text-gray-600">Level up your skills professionally</p>
             </div>
 
             {error && (

@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Users, Award } from 'lucide-react';
 
 function HomePage() {
   const navigate = useNavigate();
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Logo */}
-      <div className="flex justify-center pt-12 pb-4">
-        <img src="/logo.jpg" alt="Skilltej" className="h-20 object-contain rounded-lg shadow-lg" />
-      </div>
-
-      {/* Title */}
-      <div className="text-center mb-16">
-        <p className="text-xl text-gray-300">The Future of Learning</p>
+      {/* Header */}
+      <div className="flex justify-between items-center p-6">
+        <div>
+          <img src="/logo.jpg" alt="Skilltej" className="h-16 object-contain rounded-lg shadow-lg" />
+        </div>
+        <div className="text-right">
+          <p className="text-xl text-gray-300">The Future of Learning</p>
+        </div>
       </div>
 
       {/* Main Content - 3 Product Buttons */}
@@ -66,6 +67,8 @@ function HomePage() {
           </button>
         </div>
       </div>
+
+
     </div>
   );
 }

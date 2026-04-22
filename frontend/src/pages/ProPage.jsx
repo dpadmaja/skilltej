@@ -59,7 +59,7 @@ function ProPage() {
         </div>
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-3xl font-bold text-white">Pro</h1>
-          <p className="text-gray-300">Advanced AI Mastery Programs</p>
+          <p className="text-gray-300">Premium courses for Next level upskilling</p>
         </div>
       </div>
 

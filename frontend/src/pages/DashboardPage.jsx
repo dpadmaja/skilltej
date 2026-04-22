@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, BookOpen, CheckCircle, AlertCircle, Filter } from 'lucide-react';
 import { dashboardService, certificationService } from '../services/api';
+import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 function DashboardPage() {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const navigate = useNavigate();
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,6 +40,12 @@ function DashboardPage() {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    navigate('/certify-login');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -51,9 +61,9 @@ function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <Navbar user={user} onLogout={handleLogout} product="certify" />
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome to your learning journey</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Your Certifications Dashboard</h1>
       </div>
 
       {error && (

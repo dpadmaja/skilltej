@@ -38,6 +38,7 @@ function CertifyLoginPage({ setUser }) {
         localStorage.setItem('access_token', response.data.access_token);
         if (response.data.user) {
           setUser(response.data.user);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
         }
         navigate('/dashboard');
       } else {

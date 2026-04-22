@@ -5,7 +5,16 @@ import Navbar from '../components/Navbar';
 
 function KidsDashboardPage({ user, onLogout }) {
   const navigate = useNavigate();
+  const storedUser = JSON.parse((typeof window !== 'undefined') ? localStorage.getItem('user') || 'null' : 'null');
+  const _user = storedUser || user;
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [localUser, setLocalUser] = useState(_user);
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    setLocalUser(null);
+    navigate('/kids-login');
+  };
   const [loading, setLoading] = useState(true);
 
   const tabs = [
@@ -19,17 +28,23 @@ function KidsDashboardPage({ user, onLogout }) {
     setLoading(false);
   }, []);
 
+  const userGrade = user?.grade || user?.student_grade || '5';
+
   const lifeSkills = [
-    { id: 1, name: 'Entrepreneurship', progress: 45,grade: '5' },
-    { id: 2, name: 'Financial Literacy', progress: 60, grade: '5' },
-    { id: 3, name: 'Emotional Intelligence', progress: 30, grade: '5' },
-    { id: 4, name: 'Communication Skills', progress: 75, grade: '5' },
+    { id: 1, name: 'Entrepreneurship', progress: 45, grade: userGrade },
+    { id: 2, name: 'Financial Literacy', progress: 60, grade: userGrade },
+    { id: 3, name: 'Emotional Intelligence', progress: 30, grade: userGrade },
+    { id: 4, name: 'Communication Skills', progress: 75, grade: userGrade },
+    { id: 5, name: 'Problem Solving', progress: 0, grade: userGrade },
+    { id: 6, name: 'Social Skills', progress: 0, grade: userGrade },
+    { id: 7, name: 'Digital & AI', progress: 0, grade: userGrade },
+    { id: 8, name: 'Health & Fitness', progress: 0, grade: userGrade },
   ];
 
   const learningPaths = [
-    { id: 1, subject: 'Mathematics', grade: '5', progress: 55, improvement: 'Fractions & Decimals' },
-    { id: 2, subject: 'Science', grade: '5', progress: 45, improvement: 'Photosynthesis' },
-    { id: 3, subject: 'English', grade: '5', progress: 60, improvement: 'Essay Writing' },
+    { id: 1, subject: 'Mathematics', grade: userGrade, progress: 55, improvement: 'Fractions & Decimals' },
+    { id: 2, subject: 'Science', grade: userGrade, progress: 45, improvement: 'Photosynthesis' },
+    { id: 3, subject: 'English', grade: userGrade, progress: 60, improvement: 'Essay Writing' },
   ];
 
   const renderDashboard = () => (
@@ -187,7 +202,7 @@ function KidsDashboardPage({ user, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar user={user} onLogout={onLogout} product="kids" />
+      <Navbar user={localUser} onLogout={handleLogout} product="kids" />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Tab Navigation */}

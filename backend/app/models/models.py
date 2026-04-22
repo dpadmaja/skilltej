@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, Enum, JSON
+from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, Enum, JSON, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import enum
@@ -239,6 +239,7 @@ class CertificationType(str, enum.Enum):
 class Certification(Base):
     """Certification details model - DEPRECATED: Use LearningContent instead"""
     __tablename__ = "certifications"
+    __table_args__ = (UniqueConstraint('name', name='uix_cert_name'),)
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)

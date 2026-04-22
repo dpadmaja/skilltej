@@ -16,6 +16,8 @@ from app.services.auth_service import (
     AuthService, ExamService, AntiCheatService,
     create_access_token, verify_token, ACCESS_TOKEN_EXPIRE_MINUTES
 )
+from app.services.certificate_service import CertificateService, get_proficiency_from_score
+from fastapi.responses import StreamingResponse
 from datetime import timedelta
 from typing import Optional
 import uuid
@@ -574,6 +576,26 @@ def log_copy_paste(
 @app.post("/api/admin/seed-data")
 def seed_data(db: Session = Depends(get_db)):
     """Seed database with initial certifications and questions"""
+    def _validate_cert(cert_data):
+        required = {
+            'name': str,
+            'description': str,
+            'cert_type': str,
+            'duration_minutes': int,
+            'passing_score': float,
+            'total_questions': int,
+            'difficulty_level': str,
+        }
+        for field, typ in required.items():
+            if field not in cert_data:
+                return False
+            if not isinstance(cert_data[field], typ):
+                # allow int where float is expected for passing_score if int provided
+                if field == 'passing_score' and isinstance(cert_data[field], int):
+                    cert_data[field] = float(cert_data[field])
+                else:
+                    return False
+        return True
     # Check if data already exists
     existing = db.query(Certification).first()
     if existing:
@@ -714,7 +736,20 @@ def seed_data(db: Session = Depends(get_db)):
         }
     ]
 
+    # Remove duplicates by name before seeding
+    seen_names = set()
+    unique_certifications = []
     for cert_data in certifications_data:
+        name = cert_data.get('name')
+        # Validate certification data
+        if not _validate_cert(cert_data):
+            continue
+        if name in seen_names:
+            continue
+        seen_names.add(name)
+        unique_certifications.append(cert_data)
+
+    for cert_data in unique_certifications:
         cert = Certification(**cert_data)
         db.add(cert)
         db.flush()
@@ -729,10 +764,30 @@ def seed_data(db: Session = Depends(get_db)):
     return {"message": "Database seeded successfully"}
 
 
+def _generate_ai_questions(cert_id: int, cert_name: str, n: int = 50) -> list:
+    questions = []
+    for i in range(n):
+        questions.append({
+            "certification_id": cert_id,
+            "question_text": f"AI fundamentals Q{i+1}: conceptual question regarding {cert_name}",
+            "question_type": "multiple_choice",
+            "difficulty": "easy",
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correct_answer": "1",
+            "explanation": "General AI concept question",
+            "points": 1.0,
+            "is_practical": False,
+            "topic": "AI Fundamentals"
+        })
+    return questions
+
 def get_sample_questions(cert_id: int, cert_name: str) -> list:
     """Generate sample questions for a certification"""
     questions = []
 
+    if "ai" in cert_name.lower():
+        # For all AI certifications, generate 50 AI-related questions
+        return _generate_ai_questions(cert_id, cert_name, 50)
     if "quality engineer" in cert_name.lower():
         questions = [
             {
@@ -802,7 +857,71 @@ def get_sample_questions(cert_id: int, cert_name: str) -> list:
             }
         ]
 
+    # Ensure we have at least 50 questions total by appending generic questions
+    if len(questions) < 50:
+        additional = 50 - len(questions)
+        for i in range(additional):
+            questions.append({
+                "certification_id": cert_id,
+                "question_text": f"General knowledge question {i+1} for {cert_name}",
+                "question_type": "multiple_choice",
+                "difficulty": "easy",
+                "options": ["Option A", "Option B", "Option C", "Option D"],
+                "correct_answer": "1",
+                "explanation": "General question for expansion",
+                "points": 1.0,
+                "is_practical": False,
+                "topic": "General"
+            })
     return questions
+
+
+# ==================== CERTIFICATE ROUTES ====================
+
+@app.get("/api/certificates/{exam_attempt_id}")
+def download_certificate(
+    exam_attempt_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Download certificate PDF for passed exam"""
+    # Get exam attempt
+    exam_attempt = ExamService.get_exam_attempt(db, exam_attempt_id)
+    if not exam_attempt or exam_attempt.user_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Exam not found")
+    
+    # Verify exam was passed
+    if not exam_attempt.is_passed:
+        raise HTTPException(status_code=400, detail="Certification not passed")
+    
+    if not exam_attempt.is_submitted:
+        raise HTTPException(status_code=400, detail="Exam not submitted")
+    
+    # Get certification details
+    certification = exam_attempt.certification
+    
+    # Determine proficiency level based on score
+    proficiency_level = get_proficiency_from_score(exam_attempt.total_score or 0)
+    
+    # Generate certificate
+    certificate_pdf = CertificateService.generate_certificate(
+        recipient_name=current_user.full_name or current_user.username,
+        skill_title=certification.name,
+        proficiency_level=proficiency_level,
+        issue_date=exam_attempt.end_time,
+        organization_name="Skilltej",
+        exam_score=exam_attempt.total_score
+    )
+    
+    # Create filename
+    filename = f"certificate_{certification.id}_{current_user.id}_{exam_attempt_id}.pdf"
+    
+    # Return PDF as streaming response
+    return StreamingResponse(
+        iter([certificate_pdf.getvalue()]),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
 
 
 @app.get("/health")
