@@ -45,6 +45,25 @@ main {
   z-index: 50;
 }
 
+.topbar-stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
 .topbar .logo {
   height: 56px;
   width: auto;
