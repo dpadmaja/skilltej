@@ -617,6 +617,79 @@ main {
 
 .content-block ul { margin: 10px 0 0 20px; color: #475569; line-height: 1.7; }
 
+.summary-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--blue);
+  background: #fff;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.summary-btn:hover { background: var(--blue); color: #fff; }
+
+.pdf-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 50, 70, 0.55);
+  z-index: 110;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.pdf-overlay.open { display: flex; }
+
+.pdf-page {
+  background: #fff;
+  width: 100%;
+  max-width: 640px;
+  min-height: 65vh;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 46px rgba(0, 30, 60, 0.4), 0 2px 6px rgba(0, 30, 60, 0.18);
+  padding: 44px 46px;
+  position: relative;
+}
+
+.pdf-page p { color: #334155; line-height: 1.75; font-size: 0.98rem; margin-bottom: 12px; text-align: justify; }
+
+.pdf-page h4 { color: var(--blue); font-size: 1.05rem; margin: 16px 0 8px; }
+
+.pdf-page ul { margin: 0 0 0 20px; color: #334155; line-height: 1.8; }
+
+.pdf-head { border-bottom: 2px solid var(--blue); padding-bottom: 12px; margin-bottom: 18px; }
+
+.pdf-title { color: var(--blue); font-size: 1.25rem; font-weight: 800; }
+
+.pdf-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  border: none;
+  background: #eef4fb;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text);
+  line-height: 1;
+}
+
+.pdf-close:hover { background: #dce9f6; }
+
+@media (max-width: 560px) {
+  .pdf-page { padding: 34px 24px; }
+  .summary-btn, .practice-btn { margin: 6px 8px 6px 0; }
+}
+
 @media (max-width: 700px) {
   .content-area { padding: 18px 14px 50px; }
   .skill-body, .prob-body { padding: 14px; }

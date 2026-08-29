@@ -37,6 +37,10 @@
     <span class="footer-copy">All rights reserved</span>
   </footer>
 
+  <div class="pdf-overlay" id="pdf-overlay" onclick="if(event.target===this)closeSummary()">
+    <div class="pdf-page" id="pdf-page"></div>
+  </div>
+
   <script>
     var DATA = {
       Mathematics: [
@@ -82,7 +86,7 @@
     };
 
     var gradeSel = document.getElementById('grade');
-    for (var g = 1; g <= 12; g++) {
+    for (var g = 4; g <= 10; g++) {
       var o = document.createElement('option');
       o.value = g;
       o.text = 'Grade ' + g;
@@ -120,6 +124,7 @@
           html += '<div class="subskill">';
           html += '<div class="subskill-name">' + sub.name + '</div>';
           html += '<p class="summary">' + sub.summary + '</p>';
+          html += '<button type="button" class="summary-btn" onclick="openSummary(\'' + sub.name + '\', \'' + sub.summary + '\')">Summary</button>';
           html += '<button type="button" class="practice-btn" onclick="togglePractice(this)">Practice Questions</button>';
           html += '<div class="practice-questions">';
           html += '<ul><li>' + sampleQ('Q1', sub.name) + '</li><li>' + sampleQ('Q2', sub.name) + '</li><li>' + sampleQ('Q3', sub.name) + '</li></ul>';
@@ -135,6 +140,21 @@
 
     function sampleQ(tag, sub) {
       return tag + ' concept-check for "' + sub + '" (sample question)';
+    }
+
+    function openSummary(title, summary) {
+      document.getElementById('pdf-page').innerHTML =
+        '<button type="button" class="pdf-close" onclick="closeSummary()">&times;</button>' +
+        '<div class="pdf-head"><div class="pdf-title">' + title + '</div></div>' +
+        '<p>' + summary + '</p>' +
+        '<p>This is a sample summary page presented like a PDF. In the full product, the complete chapter summary, worked examples and diagrams for <b>' + title + '</b> will appear here.</p>' +
+        '<h4>Key Points</h4>' +
+        '<ul><li>Understand the core idea of ' + title + '.</li><li>Practise examples step by step.</li><li>Review regularly to strengthen the concept.</li></ul>';
+      document.getElementById('pdf-overlay').classList.add('open');
+    }
+
+    function closeSummary() {
+      document.getElementById('pdf-overlay').classList.remove('open');
     }
 
     function toggleAcc(btn) {
