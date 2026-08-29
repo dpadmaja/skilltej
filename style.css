@@ -405,12 +405,19 @@ main {
 }
 
 @media (max-width: 560px) {
-  .topbar { padding: 8px 14px; gap: 8px; }
-  .topbar .logo { height: 36px; }
-  .topbar-stack { gap: 8px; }
-  .topbar-actions { gap: 8px; }
-  .home-link { padding: 6px 10px; font-size: 0.9rem; }
-  .auth-btn { padding: 6px 14px; font-size: 0.78rem; }
+  .topbar,
+  .topbar-stack {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px 14px;
+    gap: 8px 10px;
+  }
+  .topbar .logo { height: 32px; }
+  .brand { font-size: 0.95rem; white-space: nowrap; }
+  .topbar-actions { margin-left: auto; gap: 6px; }
+  .home-link { padding: 5px 9px; font-size: 0.85rem; }
+  .auth-btn { padding: 5px 11px; font-size: 0.72rem; }
   .hero { padding: 48px 16px 24px; }
   .page-title { padding: 36px 16px 6px; }
   .grid { padding: 24px 16px 50px; }
@@ -420,13 +427,16 @@ main {
 }
 
 @media (max-width: 400px) {
-  .topbar { padding: 6px 10px; gap: 6px; }
-  .topbar .logo { height: 30px; }
-  .topbar-stack { gap: 6px; }
-  .topbar-actions { gap: 6px; }
-  .home-link { padding: 5px 9px; font-size: 0.82rem; }
-  .auth-btn { padding: 5px 12px; font-size: 0.72rem; }
-  .brand { font-size: clamp(1rem, 4.6vw, 1.15rem); }
+  .topbar,
+  .topbar-stack {
+    padding: 6px 10px;
+    gap: 6px 8px;
+  }
+  .topbar .logo { height: 28px; }
+  .brand { font-size: 0.85rem; }
+  .topbar-actions { gap: 4px; }
+  .home-link { padding: 4px 8px; font-size: 0.8rem; }
+  .auth-btn { padding: 4px 9px; font-size: 0.68rem; }
   .grid, .grid-five { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
   .quote { gap: 6px; }
 }
