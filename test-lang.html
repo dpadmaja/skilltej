@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Lang Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+    <div class="brand cyan">Lang</div>
+    <button type="button" class="auth-btn solid logout-btn" onclick="location.href='index.html'">Logout</button>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <h2>💬 Lang Test</h2>
+      <p>Choose a section to view its content.</p>
+    </section>
+
+    <section class="grade-bar">
+      <label for="grade">Grade</label>
+      <select id="grade" onchange="updateGrade()"></select>
+      <span class="grade-msg" id="grade-msg"></span>
+    </section>
+
+    <section class="subj-tabs" id="tabs"></section>
+
+    <section class="content-area" id="content">
+      <p class="tpl-note">Select a section to see its content. Template preview only.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <script>
+    var DATA = {
+      English: {
+        title: 'English',
+        intro: 'English is the language of connection. Practise reading, writing and speaking every day to grow your skills.',
+        points: ['Daily reading habit', 'Speak and write in English', 'Listen to English audio']
+      },
+      Comprehension: {
+        title: 'Comprehension',
+        intro: 'Read the passage carefully and answer the questions that follow. Comprehension builds attention and understanding.',
+        points: ['Read the full passage first', 'Underline keywords', 'Answer in your own words']
+      },
+      Composition: {
+        title: 'Composition',
+        intro: 'Composition is writing. Learn to build clear paragraphs with an introduction, body and conclusion.',
+        points: ['Plan before you write', 'Use a topic sentence', 'Give examples to support ideas']
+      },
+      Vocab: {
+        title: 'Vocab',
+        intro: 'Vocabulary is the collection of words you know. Learn new words and use them in sentences.',
+        points: ['Learn 5 new words a day', 'Write meaning and use in a sentence', 'Revise weekly']
+      }
+    };
+
+    var gradeSel = document.getElementById('grade');
+    for (var g = 1; g <= 12; g++) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.text = 'Grade ' + g;
+      gradeSel.appendChild(o);
+    }
+
+    var tabs = document.getElementById('tabs');
+    Object.keys(DATA).forEach(function (key) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'subj-btn';
+      b.textContent = key;
+      b.onclick = function () { selectSection(key, this); };
+      tabs.appendChild(b);
+    });
+
+    function updateGrade() {
+      document.getElementById('grade-msg').textContent = 'Grade ' + gradeSel.value + ' selected · Template preview';
+    }
+    updateGrade();
+
+    function selectSection(key, btn) {
+      document.querySelectorAll('.subj-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var d = DATA[key];
+      var html = '<div class="content-block">';
+      html += '<h3>' + d.title + '</h3>';
+      html += '<p>' + d.intro + '</p>';
+      html += '<ul>';
+      d.points.forEach(function (p) { html += '<li>' + p + '</li>'; });
+      html += '</ul>';
+      html += '</div>';
+      document.getElementById('content').innerHTML = html;
+    }
+  </script>
+
+</body>
+</html>

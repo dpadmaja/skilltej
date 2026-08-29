@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Academy Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+    <div class="brand blue">Academy</div>
+    <button type="button" class="auth-btn solid logout-btn" onclick="location.href='index.html'">Logout</button>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <h2>🎓 Academy Test</h2>
+      <p>Choose a grade and a subject to explore its skills.</p>
+    </section>
+
+    <section class="grade-bar">
+      <label for="grade">Grade</label>
+      <select id="grade" onchange="updateGrade()"></select>
+      <span class="grade-msg" id="grade-msg"></span>
+    </section>
+
+    <section class="subj-tabs" id="tabs"></section>
+
+    <section class="content-area" id="content">
+      <p class="tpl-note">Select a subject to see its skills. Template preview only.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <script>
+    var DATA = {
+      Mathematics: [
+        { name: 'Algebra', subskills: [
+          { name: 'Linear Equations', summary: 'Solve equations of the form ax + b = c and understand balancing rules.' },
+          { name: 'Polynomials', summary: 'Explore addition, subtraction and simple factoring of polynomials.' }
+        ]},
+        { name: 'Geometry', subskills: [
+          { name: 'Shapes & Angles', summary: 'Identify triangles, quadrilaterals and measure interior angles.' },
+          { name: 'Symmetry', summary: 'Recognize lines of symmetry in common 2D shapes.' }
+        ]}
+      ],
+      Physics: [
+        { name: 'Motion', subskills: [
+          { name: 'Speed & Distance', summary: 'Relate distance, time and speed using simple formulas.' },
+          { name: 'Forces', summary: 'Understand push, pull and balanced vs unbalanced forces.' }
+        ]},
+        { name: 'Energy', subskills: [
+          { name: 'Forms of Energy', summary: 'List kinetic, potential, heat and light as forms of energy.' },
+          { name: 'Energy Transfer', summary: 'See how energy moves from one form to another.' }
+        ]}
+      ],
+      Biology: [
+        { name: 'Plants', subskills: [
+          { name: 'Photosynthesis', summary: 'Plants make their own food using sunlight, water and air.' },
+          { name: 'Plant Parts', summary: 'Roots, stem, leaves and flowers and the jobs they do.' }
+        ]},
+        { name: 'Human Body', subskills: [
+          { name: 'Body Systems', summary: 'Overview of digestive, respiratory and circulatory systems.' },
+          { name: 'Habitats', summary: 'How living things adapt to their environment.' }
+        ]}
+      ],
+      Chemistry: [
+        { name: 'Matter', subskills: [
+          { name: 'States of Matter', summary: 'Solids, liquids and gases and how matter changes state.' },
+          { name: 'Mixtures', summary: 'Examples of mixtures and simple ways to separate them.' }
+        ]},
+        { name: 'Elements', subskills: [
+          { name: 'Atoms Basics', summary: 'Introduction to elements, atoms and molecules.' },
+          { name: 'Common Compounds', summary: 'Water, salt and carbon dioxide as everyday compounds.' }
+        ]}
+      ]
+    };
+
+    var gradeSel = document.getElementById('grade');
+    for (var g = 1; g <= 12; g++) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.text = 'Grade ' + g;
+      gradeSel.appendChild(o);
+    }
+
+    var tabs = document.getElementById('tabs');
+    Object.keys(DATA).forEach(function (subject) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'subj-btn';
+      b.textContent = subject;
+      b.onclick = function () { selectSubject(subject, this); };
+      tabs.appendChild(b);
+    });
+
+    function updateGrade() {
+      document.getElementById('grade-msg').textContent = 'Grade ' + gradeSel.value + ' selected · Template preview';
+    }
+    updateGrade();
+
+    function selectSubject(subject, btn) {
+      document.querySelectorAll('.subj-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderSkills(subject);
+    }
+
+    function renderSkills(subject) {
+      var html = '<div class="skills-list">';
+      DATA[subject].forEach(function (skill) {
+        html += '<div class="skill-item">';
+        html += '<button type="button" class="skill-head" onclick="toggleAcc(this)"><span>' + skill.name + '</span><span class="chev">&#9660;</span></button>';
+        html += '<div class="skill-body">';
+        skill.subskills.forEach(function (sub) {
+          html += '<div class="subskill">';
+          html += '<div class="subskill-name">' + sub.name + '</div>';
+          html += '<p class="summary">' + sub.summary + '</p>';
+          html += '<button type="button" class="practice-btn" onclick="togglePractice(this)">Practice Questions</button>';
+          html += '<div class="practice-questions">';
+          html += '<ul><li>' + sampleQ('Q1', sub.name) + '</li><li>' + sampleQ('Q2', sub.name) + '</li><li>' + sampleQ('Q3', sub.name) + '</li></ul>';
+          html += '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function sampleQ(tag, sub) {
+      return tag + ' concept-check for "' + sub + '" (sample question)';
+    }
+
+    function toggleAcc(btn) {
+      var body = btn.nextElementSibling;
+      btn.classList.toggle('open');
+      body.classList.toggle('open');
+    }
+
+    function togglePractice(btn) {
+      btn.nextElementSibling.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>

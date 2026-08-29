@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Future Skills Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+    <div class="brand orange">Future</div>
+    <button type="button" class="auth-btn solid logout-btn" onclick="location.href='index.html'">Logout</button>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <h2>🚀 Future Skills Test</h2>
+      <p>Choose a skill to explore its subskills.</p>
+    </section>
+
+    <section class="grade-bar">
+      <label for="grade">Grade</label>
+      <select id="grade" onchange="updateGrade()"></select>
+      <span class="grade-msg" id="grade-msg"></span>
+    </section>
+
+    <section class="subj-tabs" id="tabs"></section>
+
+    <section class="content-area" id="content">
+      <p class="tpl-note">Select a skill to see its subskills. Template preview only.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <script>
+    var DATA = {
+      'Financial literacy': {
+        subskills: [
+          { name: 'Saving Money', summary: 'Set aside part of your pocket money for future needs and learn why saving matters.' },
+          { name: 'Budgeting Basics', summary: 'Plan how you will spend money so needs are covered before wants.' },
+          { name: 'Needs vs Wants', summary: 'Separate essential needs from optional wants when making choices.' }
+        ]
+      },
+      'Space Tech': {
+        subskills: [
+          { name: 'Our Solar System', summary: 'Explore planets, moons and the Sun as the centre of our neighbourhood.' },
+          { name: 'Rockets & Launch', summary: 'Understand how rockets overcome gravity to reach space.' },
+          { name: 'Satellites', summary: 'See how satellites help in communication, weather and navigation.' }
+        ]
+      },
+      AI: {
+        subskills: [
+          { name: 'What is AI', summary: 'Machines that learn patterns and help us with tasks like recognition and helpers.' },
+          { name: 'Data & Patterns', summary: 'AI learns from examples, so data quality matters.' },
+          { name: 'AI in Daily Life', summary: 'Voice assistants, recommendations and smart filters all use AI.' }
+        ]
+      },
+      Robotics: {
+        subskills: [
+          { name: 'Parts of a Robot', summary: 'Sensors, motors, controllers and the body work together.' },
+          { name: 'Movement & Sensors', summary: 'Robots sense the world and move using motors and wheels.' },
+          { name: 'Simple Programming', summary: 'Give step-by-step instructions to make a robot behave.' }
+        ]
+      },
+      Environment: {
+        subskills: [
+          { name: 'Reduce, Reuse, Recycle', summary: 'Three small habits that cut waste and protect nature.' },
+          { name: 'Save Water & Energy', summary: 'Everyday actions that conserve natural resources.' },
+          { name: 'Protecting Habitats', summary: 'Keeping forests, oceans and air clean for animals and plants.' }
+        ]
+      }
+    };
+
+    var gradeSel = document.getElementById('grade');
+    for (var g = 1; g <= 12; g++) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.text = 'Grade ' + g;
+      gradeSel.appendChild(o);
+    }
+
+    var tabs = document.getElementById('tabs');
+    Object.keys(DATA).forEach(function (skill) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'subj-btn';
+      b.textContent = skill;
+      b.onclick = function () { selectSkill(skill, this); };
+      tabs.appendChild(b);
+    });
+
+    function updateGrade() {
+      document.getElementById('grade-msg').textContent = 'Grade ' + gradeSel.value + ' selected · Template preview';
+    }
+    updateGrade();
+
+    function selectSkill(skill, btn) {
+      document.querySelectorAll('.subj-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var html = '<div class="skills-list">';
+      DATA[skill].subskills.forEach(function (sub, idx) {
+        html += '<div class="skill-item">';
+        html += '<button type="button" class="skill-head" onclick="toggleAcc(this)"><span>' + sub.name + '</span><span class="chev">&#9660;</span></button>';
+        html += '<div class="skill-body">';
+        html += '<p class="summary">' + sub.summary + '</p>';
+        html += '<button type="button" class="practice-btn" onclick="togglePractice(this)">Practice Questions</button>';
+        html += '<div class="practice-questions">';
+        html += '<ul><li>Q1 concept-check for "' + sub.name + '" (sample question)</li><li>Q2 application for "' + sub.name + '" (sample question)</li><li>Q3 challenge for "' + sub.name + '" (sample question)</li></ul>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function toggleAcc(btn) {
+      var body = btn.nextElementSibling;
+      btn.classList.toggle('open');
+      body.classList.toggle('open');
+    }
+
+    function togglePractice(btn) {
+      btn.nextElementSibling.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>

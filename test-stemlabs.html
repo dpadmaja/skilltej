@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Stemlabs Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+    <div class="brand green">STEM</div>
+    <button type="button" class="auth-btn solid logout-btn" onclick="location.href='index.html'">Logout</button>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <h2>🧪 Stemlabs Test</h2>
+      <p>Choose a STEM subject to explore 25 problem statements.</p>
+    </section>
+
+    <section class="grade-bar">
+      <label for="grade">Grade</label>
+      <select id="grade" onchange="updateGrade()"></select>
+      <span class="grade-msg" id="grade-msg"></span>
+    </section>
+
+    <section class="subj-tabs" id="tabs"></section>
+
+    <section class="content-area" id="content">
+      <p class="tpl-note">Select a subject to see its problem statements. Template preview only.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <script>
+    var THEMES = {
+      Science: 'experiment',
+      Technology: 'programming',
+      Engineering: 'design',
+      Mathematics: 'problem-solving'
+    };
+    var DESCRIPTIONS = {
+      Science: 'Conduct a small hands-on experiment, note what happens and explain the result.',
+      Technology: 'Build a tiny algorithm or app logic, run it mentally and record the output.',
+      Engineering: 'Design, prototype and test a simple machine or structure that solves the problem.',
+      Mathematics: 'Model the situation with equations, solve it and interpret the answer.'
+    };
+
+    var gradeSel = document.getElementById('grade');
+    for (var g = 1; g <= 12; g++) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.text = 'Grade ' + g;
+      gradeSel.appendChild(o);
+    }
+
+    var tabs = document.getElementById('tabs');
+    Object.keys(THEMES).forEach(function (subject) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'subj-btn';
+      b.textContent = subject;
+      b.onclick = function () { selectSubject(subject, this); };
+      tabs.appendChild(b);
+    });
+
+    function updateGrade() {
+      document.getElementById('grade-msg').textContent = 'Grade ' + gradeSel.value + ' selected · Template preview';
+    }
+    updateGrade();
+
+    function selectSubject(subject, btn) {
+      document.querySelectorAll('.subj-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var html = '<div class="prob-list">';
+      for (var i = 1; i <= 25; i++) {
+        html += '<div class="prob-item">';
+        html += '<button type="button" class="prob-head" onclick="toggleProblem(this)"><span>Problem ' + i + '</span><span class="chev">&#9660;</span></button>';
+        html += '<div class="prob-body">';
+        html += '<div class="prob-number">PROBLEM STATEMENT ' + i + ' · ' + subject.toUpperCase() + '</div>';
+        html += '<p class="prob-desc">' + DESCRIPTIONS[subject] + ' (sample problem statement ' + i + ' for ' + subject + '.)</p>';
+        html += '<div class="canvas-box"><canvas height="180"></canvas></div>';
+        html += '<label class="observe-label" for="obs">Observations</label>';
+        html += '<textarea id="obs" class="observe" placeholder="Record your observations here..."></textarea>';
+        html += '<button type="button" class="submit-btn" onclick="submitObs(this)">Submit</button>';
+        html += '<div class="submit-msg"></div>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function toggleProblem(btn) {
+      var body = btn.nextElementSibling;
+      var opening = !body.classList.contains('open');
+      btn.classList.toggle('open');
+      body.classList.toggle('open');
+      if (opening) {
+        var cv = body.querySelector('canvas');
+        if (cv) { drawCanvas(cv); }
+      }
+    }
+
+    function drawCanvas(cv) {
+      var ctx = cv.getContext('2d');
+      var w = cv.clientWidth || 400;
+      var h = cv.clientHeight || 180;
+      cv.width = w * 2;
+      cv.height = h * 2;
+      ctx.scale(2, 2);
+      ctx.fillStyle = '#fbfdff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = '#d5e7f8';
+      ctx.lineWidth = 1;
+      for (var x = 0; x <= w; x += 25) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (var y = 0; y <= h; y += 25) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#088bdb';
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#12b5d4';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, 40, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#67d19a';
+      ctx.beginPath();
+      ctx.arc(w / 2 - 70, h / 2 + 30, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(w / 2 + 80, h / 2 - 40, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#f2a03d';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(0, h - 20);
+      ctx.bezierCurveTo(w * 0.33, h - 60, w * 0.66, h + 20, w, h - 30);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function submitObs(btn) {
+      btn.nextElementSibling.textContent = 'Submitted for review (template). Well done!';
+    }
+  </script>
+
+</body>
+</html>

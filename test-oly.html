@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Oly Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+    <div class="brand purple">Oly</div>
+    <button type="button" class="auth-btn solid logout-btn" onclick="location.href='index.html'">Logout</button>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <h2>🏆 Oly Test</h2>
+      <p>Pick an Olympiad to view its practice questions.</p>
+    </section>
+
+    <section class="grade-bar">
+      <label for="grade">Grade</label>
+      <select id="grade" onchange="updateGrade()"></select>
+      <span class="grade-msg" id="grade-msg"></span>
+    </section>
+
+    <section class="subj-tabs" id="tabs"></section>
+
+    <section class="content-area" id="content">
+      <p class="tpl-note">Select an Olympiad to see practice questions. Template preview only.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <script>
+    var DATA = {
+      Mathematics: [
+        'Find the missing number in the pattern: 4, 9, 16, __, 36.',
+        'If 3 pens cost $6, how much will 5 pens cost?',
+        'A triangle has sides 3 cm, 4 cm and 5 cm. Is it a right-angled triangle?',
+        'Simplify: 2x + 3x - x.',
+        'A clock shows 3:45. How many degrees is the angle between the hands?'
+      ],
+      Science: [
+        'Which gas do plants take in during photosynthesis?',
+        'What is the main function of the heart in the human body?',
+        'Classify the following into solids, liquids and gases: milk, stone, steam.',
+        'What force keeps objects pulled towards the Earth?',
+        'Which organ filters waste from the blood?'
+      ],
+      Cyber: [
+        'What makes a strong password? Give two rules.',
+        'Define phishing and how can you stay safe from it?',
+        'What is two-factor authentication?',
+        'Which device protects a network from unauthorised access?',
+        'Name two safe practices when sharing photos online.'
+      ],
+      Finance: [
+        'What is the difference between a need and a want?',
+        'What does "saving" mean and why is it important?',
+        'Explain simple interest with one example.',
+        'What is a budget and why should we make one?',
+        'What is the difference between a bank account and a credit card?'
+      ],
+      English: [
+        'Choose the correct article: He is ___ honest boy.',
+        'Identify the synonym of "happy".',
+        'Fill in the blank with the right tense: She ___ (go) to school yesterday.',
+        'Spot the error: "They was playing in the field."',
+        'Rewrite in passive voice: "The cat chased the rat."'
+      ]
+    };
+
+    var gradeSel = document.getElementById('grade');
+    for (var g = 1; g <= 12; g++) {
+      var o = document.createElement('option');
+      o.value = g;
+      o.text = 'Grade ' + g;
+      gradeSel.appendChild(o);
+    }
+
+    var tabs = document.getElementById('tabs');
+    Object.keys(DATA).forEach(function (name) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'subj-btn';
+      b.textContent = name;
+      b.onclick = function () { selectOly(name, this); };
+      tabs.appendChild(b);
+    });
+
+    function updateGrade() {
+      document.getElementById('grade-msg').textContent = 'Grade ' + gradeSel.value + ' selected · Template preview';
+    }
+    updateGrade();
+
+    function selectOly(name, btn) {
+      document.querySelectorAll('.subj-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var html = '<div class="skill-item">';
+      html += '<button type="button" class="skill-head" onclick="this.nextElementSibling.classList.toggle(\'open\'); this.classList.toggle(\'open\');"><span>Practice Questions</span><span class="chev">&#9660;</span></button>';
+      html += '<div class="skill-body open"><ol class="oly-questions">';
+      DATA[name].forEach(function (q) {
+        html += '<li>' + q + '</li>';
+      });
+      html += '</ol></div>';
+      html += '</div>';
+      document.getElementById('content').innerHTML = html;
+    }
+  </script>
+
+</body>
+</html>
