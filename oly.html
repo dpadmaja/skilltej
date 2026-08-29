@@ -12,8 +12,8 @@
     <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
     <div class="brand purple">Oly</div>
     <a class="home-link" href="index.html">🏠 Home</a>
-    <a class="auth-btn outline" href="#">Sign In</a>
-    <a class="auth-btn solid" href="#">Sign Up</a>
+    <button type="button" class="auth-btn outline" onclick="openPopup('signin')">Sign In</button>
+    <button type="button" class="auth-btn solid" onclick="openPopup('signup')">Sign Up</button>
   </header>
 
   <main>
@@ -50,9 +50,49 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <span class="footer-copy">&copy; 2026 Skilltej. All rights reserved</span>
+<footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
   </footer>
 
+  <div class="modal-overlay" id="signin-modal">
+    <div class="modal">
+      <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Welcome Back</h2>
+      <p class="modal-sub">Sign in to your Skilltej account</p>
+      <form onsubmit="return false">
+        <input type="text" placeholder="Username" />
+        <input type="password" placeholder="Password" />
+        <button type="submit" class="modal-submit">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="signup-modal">
+    <div class="modal">
+      <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Create Account</h2>
+      <p class="modal-sub">Join Skilltej Kids</p>
+      <form onsubmit="return false">
+        <div class="form-row">
+          <input type="text" placeholder="First Name" />
+          <input type="text" placeholder="Last Name" />
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="Username" />
+          <input type="password" placeholder="Password" />
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="Grade" />
+          <input type="text" placeholder="School" />
+          <input type="text" placeholder="City" />
+        </div>
+        <input type="tel" placeholder="Mobile" />
+        <input type="email" placeholder="Email" />
+        <button type="submit" class="modal-submit">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

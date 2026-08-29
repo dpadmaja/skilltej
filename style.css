@@ -101,6 +101,9 @@ main {
   font-size: 0.92rem;
   transition: all 0.2s ease;
   white-space: nowrap;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-family: inherit;
 }
 
 .auth-btn.outline {
@@ -268,6 +271,112 @@ main {
   font-size: 0.85rem;
   color: #e6f4ff;
   font-weight: 600;
+}
+
+/* ---------- Modals ---------- */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 40, 80, 0.55);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 470px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0, 30, 60, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-size: 1.6rem;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+
+.modal .modal-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.modal .form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #dbe7f3;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 12px;
+  color: var(--text);
+  transition: border-color 0.2s ease;
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.modal .modal-submit {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(120deg, var(--blue), var(--accent));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 4px;
+  transition: filter 0.2s ease;
+}
+
+.modal .modal-submit:hover {
+  filter: brightness(1.08);
+}
+
+.modal .modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  border: none;
+  background: #eef4fb;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text);
+  line-height: 1;
+}
+
+.modal .modal-close:hover {
+  background: #dce9f6;
+}
+
+@media (max-width: 560px) {
+  .modal { padding: 26px 20px; }
+  .modal .form-row { flex-direction: column; gap: 0; }
 }
 
 @media (max-width: 560px) {
