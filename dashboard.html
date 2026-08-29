@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skilltej Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar topbar-stack">
+    <div class="topbar-row">
+      <img class="logo" src="logo.jpg" alt="Skilltej Logo" />
+      <div class="brand blue" id="dash-brand">Dashboard</div>
+    </div>
+    <nav class="topbar-actions">
+      <a class="home-link" href="index.html">🏠</a>
+      <a class="test-btn" id="nav-test" href="#">Test</a>
+      <a class="dash-btn dactive" href="#">Dashboard</a>
+      <button type="button" class="auth-btn outline" onclick="openPopup('signup')">Sign Up</button>
+      <button type="button" class="auth-btn solid" onclick="openPopup('signin')">Sign In</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dash-wrap" id="dash-content"></section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">All rights reserved</span>
+  </footer>
+
+  <div class="modal-overlay" id="signin-modal">
+    <div class="modal">
+      <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Welcome Back</h2>
+      <p class="modal-sub">Sign in to your Skilltej account</p>
+      <form onsubmit="return false">
+        <input type="text" placeholder="Username" />
+        <input type="password" placeholder="Password" />
+        <button type="submit" class="modal-submit">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="signup-modal">
+    <div class="modal">
+      <button type="button" class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Create Account</h2>
+      <p class="modal-sub">Join Skilltej Kids</p>
+      <form onsubmit="return false">
+        <div class="form-row">
+          <input type="text" placeholder="First Name" />
+          <input type="text" placeholder="Last Name" />
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="Username" />
+          <input type="password" placeholder="Password" />
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="Grade" />
+          <input type="text" placeholder="School" />
+          <input type="text" placeholder="City" />
+        </div>
+        <input type="tel" placeholder="Mobile" />
+        <input type="email" placeholder="Email" />
+        <button type="submit" class="modal-submit">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    var APPS = {
+      academy: {
+        title: 'Skilltej Academy',
+        test: 'test-academy.html',
+        emoji: '🎓',
+        overall: 68,
+        answered: 1240,
+        correct: 940,
+        points: 720,
+        accuracy: 76,
+        streak: 12,
+        skills: [
+          { name: 'Mathematics', pct: 72, color: '#088bdb' },
+          { name: 'Physics', pct: 60, color: '#3a7bd5' },
+          { name: 'Biology', pct: 81, color: '#0fa890' },
+          { name: 'Chemistry', pct: 58, color: '#f59042' }
+        ],
+        badges: ['🔥 12-day streak', '🏆 Grade 6 topper', '📚 34 chapters done', '⭐ 720 points']
+      },
+      oly: {
+        title: 'Skilltej Oly',
+        test: 'test-oly.html',
+        emoji: '🏆',
+        overall: 74,
+        answered: 860,
+        correct: 645,
+        points: 540,
+        accuracy: 75,
+        streak: 9,
+        skills: [
+          { name: 'Logical Reasoning', pct: 78, color: '#088bdb' },
+          { name: 'Mental Ability', pct: 70, color: '#3a7bd5' },
+          { name: 'Maths Olympiad', pct: 74, color: '#0fa890' },
+          { name: 'Science Olympiad', pct: 72, color: '#f59042' }
+        ],
+        badges: ['🔥 9-day streak', '🥇 District level qualified', '⭐ 540 points', '🎯 92% in mock test']
+      },
+      lang: {
+        title: 'Skilltej Language',
+        test: 'test-lang.html',
+        emoji: '🗣️',
+        overall: 71,
+        answered: 980,
+        correct: 725,
+        points: 610,
+        accuracy: 74,
+        streak: 15,
+        skills: [
+          { name: 'Reading', pct: 82, color: '#088bdb' },
+          { name: 'Writing', pct: 66, color: '#3a7bd5' },
+          { name: 'Grammar', pct: 73, color: '#0fa890' },
+          { name: 'Vocabulary', pct: 77, color: '#f59042' },
+          { name: 'Speaking', pct: 56, color: '#12b5d4' }
+        ],
+        badges: ['🔥 15-day streak', '💬 120 words learned', '📖 18 stories read', '⭐ 610 points']
+      },
+      stemlabs: {
+        title: 'Skilltej Stem Labs',
+        test: 'test-stemlabs.html',
+        emoji: '🧪',
+        overall: 63,
+        answered: 540,
+        correct: 385,
+        points: 470,
+        accuracy: 71,
+        streak: 7,
+        skills: [
+          { name: 'Robotics', pct: 68, color: '#088bdb' },
+          { name: 'Coding', pct: 74, color: '#3a7bd5' },
+          { name: 'Electronics', pct: 52, color: '#0fa890' },
+          { name: '3D Design', pct: 58, color: '#f59042' }
+        ],
+        badges: ['🔥 7-day streak', '🤖 6 projects built', '💻 40 coding blocks', '⭐ 470 points']
+      },
+      futureskills: {
+        title: 'Skilltej Future Skills',
+        test: 'test-futureskills.html',
+        emoji: '🚀',
+        overall: 66,
+        answered: 700,
+        correct: 505,
+        points: 560,
+        accuracy: 72,
+        streak: 10,
+        skills: [
+          { name: 'Financial Literacy', pct: 62, color: '#088bdb' },
+          { name: 'Space Tech', pct: 71, color: '#3a7bd5' },
+          { name: 'AI', pct: 68, color: '#0fa890' },
+          { name: 'Robotics', pct: 64, color: '#f59042' },
+          { name: 'Environment', pct: 58, color: '#12b5d4' }
+        ],
+        badges: ['🔥 10-day streak', '🛰️ 5 space models', '🤖 AI explorer', '⭐ 560 points']
+      }
+    };
+
+    var STUDENT = { name: 'Aarav Sharma', grade: 6, school: 'Sunbeam Public School', city: 'Hyderabad' };
+
+    var params = new URLSearchParams(window.location.search);
+    var appKey = params.get('app') || 'academy';
+    var app = APPS[appKey] || APPS.academy;
+
+    document.getElementById('dash-brand').textContent = app.title;
+    document.getElementById('nav-test').href = app.test;
+
+    var initials = STUDENT.name.split(' ').map(function (w) { return w[0]; }).join('');
+
+    var skillsHtml = app.skills.map(function (s) {
+      return '<div class="skill-row">' +
+        '<div class="skill-top"><span>' + s.name + '</span><span class="sp">' + s.pct + '%</span></div>' +
+        '<div class="skill-track"><div class="skill-fill" style="width:' + s.pct + '%;background:' + s.color + '"></div></div>' +
+        '</div>';
+    }).join('');
+
+    var badgesHtml = app.badges.map(function (b) {
+      return '<span class="badge">' + b + '</span>';
+    }).join('');
+
+    document.getElementById('dash-content').innerHTML =
+      '<div class="dash-hello">' +
+        '<div class="dash-avatar">' + initials + '</div>' +
+        '<div><h2>Hi ' + STUDENT.name + ' 👋</h2>' +
+        '<p>Grade ' + STUDENT.grade + ' • ' + STUDENT.school + ', ' + STUDENT.city + '</p>' +
+        '<p>Sample student profile — progress shown is a template preview.</p></div>' +
+        '<div class="dash-emoji">' + app.emoji + '</div>' +
+      '</div>' +
+
+      '<div class="dash-stats">' +
+        '<div class="dash-stat"><div class="v" style="color:var(--blue)">' + app.accuracy + '%</div><div class="k">Accuracy</div></div>' +
+        '<div class="dash-stat"><div class="v" style="color:var(--green)">' + app.answered + '</div><div class="k">Questions Answered</div></div>' +
+        '<div class="dash-stat"><div class="v" style="color:var(--accent2)">' + app.correct + '</div><div class="k">Correct Answers</div></div>' +
+        '<div class="dash-stat"><div class="v" style="color:var(--purple)">' + app.streak + '</div><div class="k">Day Streak</div></div>' +
+      '</div>' +
+
+      '<div class="dash-main">' +
+        '<div class="dash-card">' +
+          '<h3>📈 Skill Progress</h3>' +
+          skillsHtml +
+        '</div>' +
+        '<div class="dash-card dash-ring">' +
+          '<h3>🎯 Overall Progress</h3>' +
+          '<div class="ring" id="progress-ring"><div class="ring-in"><div class="ring-p">' + app.overall + '%</div><div class="ring-label">overall</div></div></div>' +
+          '<p class="ring-sub">' + app.points + ' skill points earned</p>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="dash-card" style="margin-bottom:18px">' +
+        '<h3>🏅 Achievements</h3>' +
+        '<div class="badge-row">' + badgesHtml + '</div>' +
+      '</div>' +
+
+      '<div class="dash-cta">' +
+        '<a class="dash-go" href="' + app.test + '">Continue Learning ➜</a>' +
+        '<a class="dash-go" href="' + app.test + '#grade">Take a Test ➜</a>' +
+      '</div>';
+
+    var ring = document.getElementById('progress-ring');
+    ring.style.background = 'conic-gradient(var(--blue) ' + app.overall + '%, #e3eff9 0)';
+  </script>
+</body>
+</html>
