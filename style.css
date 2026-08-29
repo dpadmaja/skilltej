@@ -25,6 +25,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 main {
@@ -270,21 +271,24 @@ main {
 }
 
 @media (max-width: 560px) {
-  .topbar { padding: 10px 14px; gap: 10px; }
-  .topbar .logo { height: 44px; }
-  .home-link { padding: 6px 12px; font-size: 0.82rem; }
-  .auth-btn { padding: 7px 12px; font-size: 0.8rem; }
-  .hero { padding: 60px 16px 24px; }
-  .page-title { padding: 40px 16px 6px; }
-  .grid { padding: 28px 16px 50px; }
-  .card { padding: 24px 12px; font-size: 1rem; gap: 10px; }
-  .card .emoji { font-size: 2rem; }
+  .topbar { flex-wrap: wrap; padding: 10px 14px; gap: 8px 10px; }
+  .topbar .logo { height: 40px; }
+  .home-link { padding: 6px 12px; font-size: 0.8rem; }
+  .auth-btn { padding: 6px 12px; font-size: 0.78rem; }
+  .hero { padding: 48px 16px 24px; }
+  .page-title { padding: 36px 16px 6px; }
+  .grid { padding: 24px 16px 50px; }
+  .grid, .grid-five { gap: 14px; }
+  .card { padding: 22px 12px; font-size: 1rem; gap: 10px; }
+  .card .emoji { font-size: 1.9rem; }
 }
 
 @media (max-width: 400px) {
-  .topbar { padding: 8px 12px; gap: 8px; }
-  .topbar .logo { height: 36px; }
-  .home-link { padding: 5px 10px; font-size: 0.78rem; }
-  .auth-btn { padding: 6px 10px; font-size: 0.75rem; }
+  .topbar { padding: 8px 10px; gap: 6px 8px; }
+  .topbar .logo { height: 34px; }
+  .brand { font-size: clamp(1rem, 4.6vw, 1.15rem); }
+  .home-link { padding: 5px 9px; font-size: 0.75rem; }
+  .auth-btn { padding: 5px 9px; font-size: 0.72rem; }
+  .grid, .grid-five { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
   .quote { gap: 6px; }
 }
